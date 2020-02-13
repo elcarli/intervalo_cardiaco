@@ -1,9 +1,4 @@
-<!Doctype html>
-<html>
-<head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-<script> 
-	$(document).ready(function(){
+$(document).ready(function(){
 	
 	var resp = "";
 	var nombre=document.getElementById("nombre").value; 
@@ -23,7 +18,6 @@
     
     
     function getSensor(){ 
-		var nombre=document.getElementById("nombre").value;
 		$.ajax({
                 type: "GET",
                 url: "/sesion?name="+nombre,
@@ -36,19 +30,3 @@
             });
     }
 });
-</script
-</head>
-<body>
-	<h2>{{tit}}</h2>
-	<br><br>
-
-	<p>Nombre: <input type="text" id="nombre"></p>
-	<button id="empezar">Empezar</button>
-	<br>
-	<button id="detener">Detener</button>
-	<br>
-	
-	<div id="res"></div>	
-
-</body>
-</html>

@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 import serial, time
-from tinydb import TinyDB, Query
-import math
+from tinydb import TinyDB, Query, where
+import math, json
 
 app = Flask(__name__)
 
@@ -10,10 +10,18 @@ def home():
 	tit="Prueba COM2"
 	return render_template("prueba.html",tit=tit)
 	
+@app.route("/historico")
+def historico():
+	tit="Historico"
+	return render_template("historico.html",tit=tit)	
+	
+	
 @app.route("/sesion")
 def sesion():
 	
-	nombre=request.args['nombre']
+	nombre=request.args['name']
+	
+	print(nombre)
 	
 	port = "COM2"
 	ser = serial.Serial(port, 9600)
@@ -29,7 +37,8 @@ def sesion():
 	aux = jsonify({"hr": str(hr), "rr": str(rr)})
 	
 	db = TinyDB('db.json')
-	db.insert({"hr": str(hr), "rr": str(rr)})
+		
+	db.insert({"nombre": str(nombre), "hr": str(hr), "rr": str(rr)})
 	
 	return aux
 	
@@ -38,11 +47,27 @@ def sesion():
 def lista():
 	
 	db = TinyDB('db.json')
+	res = db.all()
 	
-	for item in db:
-		print(item["hr"]+"-"+item["rr"])
+	#Es una lista pero con comillas simples
+	#print(res)
+	
+	return jsonify(res)
+	
+	
+@app.route("/consulta/<nombre>")
+def consulta(nombre):
+	
+	db = TinyDB('db.json')
+	
+	res = db.search(where('nombre') == nombre)
+	
+	#print(nombre)
+	
+	#for item in res:
+	#	print(item["hr"]+"-"+item["rr"])
 		
-	return "probando"
+	return jsonify(res)
 	
 if __name__ == "__main__":
 	app.run()
