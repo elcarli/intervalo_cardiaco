@@ -4,8 +4,11 @@ port = "COM1"
 ser = serial.Serial(port, 9600)
 
 while (True): 
-	s1=random.randint(15, 50)
-	s2=random.randint(15, 100)
+	#miliseconds
+	s1=random.randint(500, 1150)
+	
+	#beats/min
+	s2=random.randint(50, 140)
 	
 
 	m1 = str(s1)
