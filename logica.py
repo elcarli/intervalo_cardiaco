@@ -13,15 +13,15 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-	tit="Prueba COM2"
-	return render_template("prueba.html",tit=tit)
+	tit="Sesión Actual"
+	return render_template("sesion.html",tit=tit)
 	
 @app.route("/historico")
-
 def historico():
-	tit="Historico"
+	tit="Historico de sesiones"
 	return render_template("historico.html",tit=tit)	
-	
+
+@app.route("/analisis")
 def analisis():
 	tit="Analisis de sesiones"
 	return render_template("analisis.html",tit=tit)	

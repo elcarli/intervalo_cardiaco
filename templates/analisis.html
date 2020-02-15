@@ -18,12 +18,58 @@
 						
                         resp=`<table border='1'>`;
 
-                          data.forEach(o => {                         
+                          data.forEach(o => {
+
+                          var estRR = "";
+                          var estSDRR = "";
+                          var estprr50 = "";
+
+
+                          if(o.meanRR < 750) {
+                            estRR = "HIGH";
+                          }
+                          else if(o.meanRR >= 750 && o.meanRR <= 900) {
+                            estRR = "MODERATE";
+                          }
+                          else {
+                            estRR = "LOW";
+                          }
+
+                          if(o.sdRR < 70) {
+                            estSDRR = "HIGH";
+                          }
+                          else if(o.sdRR >= 50 && o.sdRR <= 100) {
+                            estSDRR = "MODERATE";
+                          }
+                          else {
+                            estSDRR = "LOW";
+                          }
+
+                          if(o.prr50 < 0.3) {
+                            estprr50 = "HIGH";
+                          }
+                          else if(o.prr50 >= 0.3) {
+                            estprr50 = "LOW";
+                          }
+
                           resp+=`
                             <tr>
-                              <td>Nombre:</td>  <td>${o.nombre}</td>
-                              <td>HR:</td>  <td>${o.hr}</td>
-                              <td>RR:</td>  <td>${o.rr}</td>
+                              <td>Nombre: ${o.nombre}</td>
+                              <td>##</td>
+                              <td>Media HR: ${o.meanHR}</td>
+                              <td>Max HR: ${o.maxHR}</td>
+                              <td>Min HR: ${o.minHR}</td>
+                              <td>Desviación HR: ${o.sdHR}</td>
+                              <td>##</td>
+                              <td>Media RR: ${o.meanRR}</td>
+                              <td>ESTADO RR: ${estRR}</td>
+                              <td>Max RR: ${o.maxRR}</td>
+                              <td>Min RR: ${o.minRR}</td>
+                              <td>Desviación RR: ${o.sdRR}</td>
+                              <td>ESTADO SDRR: ${estSDRR}</td>
+                              <td>##</td>
+                              <td>pRR50: ${o.prr50}</td>
+                              <td>ESTADO RR: ${estprr50}</td>
                             </tr>`;
                           });
 

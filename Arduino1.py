@@ -4,11 +4,12 @@ port = "COM1"
 ser = serial.Serial(port, 9600)
 
 while (True): 
-	#miliseconds
-	s1=random.randint(500, 1150)
 	
-	#beats/min
-	s2=random.randint(50, 140)
+	#HR beats/min
+	s1=random.randint(50, 140)
+	
+	#RR miliseconds
+	s2=random.randint(500, 1000)
 	
 
 	m1 = str(s1)
@@ -24,5 +25,5 @@ while (True):
 	print("s1 es", s1)
 	print("s2 es", s2)
 
-	time.sleep(1)
+	time.sleep(0.5)
 ser.close()
