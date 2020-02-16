@@ -1,0 +1,137 @@
+<!Doctype html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+<script> 
+	$(document).ready(function(){
+
+    function getData(){ 
+		var nombre=document.getElementById("nombre").value;
+		$.ajax({
+                type: "GET",
+                url: "/centroide/"+nombre,
+                success: function(data) {
+
+                        //Se vacía el grafico
+                        scatterChartRR.data.datasets.forEach((dataset) => {
+                          dataset.data.pop();
+                        });
+
+                        scatterChartHR.data.datasets.forEach((dataset) => {
+                          dataset.data.pop();
+                        });
+						
+                        var obj=data;
+
+												//Se actualiza el grafico
+                        scatterChartRR.data.datasets[0].data = obj.coordsRR;
+                        
+                        scatterChartRR.data.datasets[1].data.push(obj.centroideRR);
+                        
+
+                        scatterChartHR.data.datasets[0].data = obj.coordsHR;
+
+                        scatterChartHR.data.datasets[1].data.push(obj.centroideHR);
+
+                        scatterChartRR.update();
+                        scatterChartHR.update();
+
+                }
+            });
+    }
+  
+    $('#ver').click(function() {
+      getData();
+    });
+    
+	//Se obtiene el contexto Canvas RR
+	var ctx1 = document.getElementById('chartRR');
+  var ctx2 = document.getElementById('chartHR');
+  
+
+	//Se inicializa el gráfico
+	var scatterChartRR = new Chart(ctx1, {
+		type: 'scatter',
+		data: {
+				datasets: [{
+					label: 'RR',
+					data: [],
+					backgroundColor: 'rgba(255, 99, 132, 1)'
+        },
+        {
+					label: 'Centroide',
+					data: [],
+					backgroundColor: 'rgba(0, 0, 0, 1)'
+				}]
+		},
+		options: {
+			"responsive": true,
+			"maintainAspectRatio": false,
+				scales: {
+						xAxes: [{
+								type: 'linear',
+								position: 'bottom'
+						}]
+				}
+		}
+	});
+
+	var scatterChartHR = new Chart(ctx2, {
+		type: 'scatter',
+		data: {
+				datasets: [{
+					label: 'Heart Rate',
+					data: [],
+					backgroundColor: 'rgba(100, 250, 132, 1)'
+        },
+        {
+					label: 'Centroide',
+					data: [],
+					backgroundColor: 'rgba(0, 0, 0, 1)'
+				}]
+		},
+		options: {
+			"responsive": true,
+			"maintainAspectRatio": false,
+				scales: {
+						xAxes: [{
+								type: 'linear',
+								position: 'bottom'
+						}]
+				}
+		}
+	});
+	
+	
+});
+</script>
+</head>
+<body>
+	<br>
+
+	<h2 class="text-center">Centroide</h1>
+
+	<div class="col-12">
+		<div class="input-group input-group-lg w-25 mx-auto">
+			<input type="text" id="nombre" class="form-control" placeholder="Nombre" aria-label="Recipient's username" aria-describedby="basic-addon2">
+			<div class="input-group-append">
+				<button class="btn btn-outline-success" type="button" id="ver">Ver</button>
+			</div>
+		</div>
+	</div>
+	
+	<br>
+	
+	<div style="height: 500px; width: 500px; display: table; margin: 0 auto;">
+    <canvas id="chartRR"></canvas>
+  </div>
+
+	<div style="height: 500px; width: 500px; display: table; margin: 0 auto;">
+    <canvas id="chartHR"></canvas>
+  </div>
+
+</body>
+</html>

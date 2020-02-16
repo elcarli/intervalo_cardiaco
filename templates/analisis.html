@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 <script> 
 	$(document).ready(function(){
 	
@@ -16,64 +17,91 @@
                 url: "/analizar",
                 success: function(data) {
 						
-                        resp=`<table border='1'>`;
+                        resp=`<table class="table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Media HR</th>
+                                    <th scope="col">Min HR</th>
+                                    <th scope="col">Max HR</th>
+                                    <th scope="col">SD HR</th>
+                                    <th scope="col">Media RR</th>
+                                    <th scope="col">ESTADO RR</th>
+                                    <th scope="col">Min RR</th>
+                                    <th scope="col">Max RR</th>
+                                    <th scope="col">SD RR</th>
+                                    <th scope="col">ESTADO SDRR</th>
+                                    <th scope="col">pRR50</th>
+                                    <th scope="col">ESTADO pRR50</th>
+                                  </tr>
+                                </thead>
+                                <tbody>`;
 
                           data.forEach(o => {
 
                           var estRR = "";
+                          var estRRcolor = "";
                           var estSDRR = "";
+                          var estSDRRcolor = "";
                           var estprr50 = "";
+                          var estprr50color = "";
 
 
                           if(o.meanRR < 750) {
                             estRR = "HIGH";
+                            estRRcolor = "green";
                           }
                           else if(o.meanRR >= 750 && o.meanRR <= 900) {
                             estRR = "MODERATE";
+                            estRRcolor = "yellow";
                           }
                           else {
                             estRR = "LOW";
+                            estRRcolor = "red";
                           }
 
-                          if(o.sdRR < 70) {
+                          if(o.sdRR < 50) {
                             estSDRR = "HIGH";
+                            estSDRRcolor = "green";
                           }
                           else if(o.sdRR >= 50 && o.sdRR <= 100) {
                             estSDRR = "MODERATE";
+                            estSDRRcolor = "yellow";
                           }
                           else {
                             estSDRR = "LOW";
+                            estSDRRcolor = "red";
                           }
 
                           if(o.prr50 < 0.3) {
                             estprr50 = "HIGH";
+                            estprr50color = "green";
                           }
                           else if(o.prr50 >= 0.3) {
                             estprr50 = "LOW";
+                            estprr50color = "red";
                           }
 
                           resp+=`
                             <tr>
-                              <td>Nombre: ${o.nombre}</td>
-                              <td>##</td>
-                              <td>Media HR: ${o.meanHR}</td>
-                              <td>Max HR: ${o.maxHR}</td>
-                              <td>Min HR: ${o.minHR}</td>
-                              <td>Desviación HR: ${o.sdHR}</td>
-                              <td>##</td>
-                              <td>Media RR: ${o.meanRR}</td>
-                              <td>ESTADO RR: ${estRR}</td>
-                              <td>Max RR: ${o.maxRR}</td>
-                              <td>Min RR: ${o.minRR}</td>
-                              <td>Desviación RR: ${o.sdRR}</td>
-                              <td>ESTADO SDRR: ${estSDRR}</td>
-                              <td>##</td>
-                              <td>pRR50: ${o.prr50}</td>
-                              <td>ESTADO RR: ${estprr50}</td>
+                              <td>${o.nombre}</td>
+                              <td>${o.meanHR}</td>
+                              <td>${o.minHR}</td>
+                              <td>${o.maxHR}</td>
+                              <td>${o.sdHR}</td>
+                              <td>${o.meanRR}</td>
+                              <td bgcolor=${estRRcolor}>${estRR}</td>
+                              <td>${o.minRR}</td>
+                              <td>${o.maxRR}</td>
+                              <td>${o.sdRR}</td>
+                              <td bgcolor=${estSDRRcolor}>${estSDRR}</td>
+                              <td>${o.prr50}</td>
+                              <td bgcolor=${estprr50color}>${estprr50}</td>
                             </tr>`;
                           });
 
-                        resp+=`</table>`;
+                        resp+=`</tbody>
+                            </table>`;
             
                         //resp+=`${data[0].nombre} - ${data[0].hr} - ${data[0].rr}`;
                         $("#res").html(resp);
@@ -82,11 +110,12 @@
     }
 		
   });
-</script
+</script>
 </head>
 <body>
-	<h2>{{tit}}</h2>
-	<br><br>
+	<br>
+  
+	<h2 class="text-center">ANÁLISIS DE DATOS Y CENTROIDES</h2>
 	
 	<div id="res"></div>	
 

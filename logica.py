@@ -13,25 +13,30 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-	tit="Sesión Actual"
-	return render_template("sesion.html",tit=tit)
+	return render_template("index.html")
+
+@app.route("/iniciar")
+def iniciar():
+	return render_template("sesion.html")
 	
 @app.route("/historico")
 def historico():
-	tit="Historico de sesiones"
-	return render_template("historico.html",tit=tit)	
+	return render_template("historico.html")	
 
 @app.route("/analisis")
 def analisis():
-	tit="Analisis de sesiones"
-	return render_template("analisis.html",tit=tit)	
+	return render_template("analisis.html")	
+	
+@app.route("/centro")
+def centro():
+	return render_template("centroide.html")		
+	
+	
 	
 @app.route("/sesion")
 def sesion():
 	
 	nombre=request.args['name']
-	
-	print(nombre)
 	
 	port = "COM2"
 	ser = serial.Serial(port, 9600)
@@ -58,10 +63,7 @@ def lista():
 	
 	db = TinyDB('db.json')
 	res = db.all()
-	
-	#Es una lista de diccionarios
-	print(res)
-	
+		
 	return jsonify(res)
 	
 	
@@ -71,12 +73,7 @@ def consulta(nombre):
 	db = TinyDB('db.json')
 	
 	res = db.search(where('nombre') == nombre)
-	
-	#print(nombre)
-	
-	#for item in res:
-	#	print(item["hr"]+"-"+item["rr"])
-		
+			
 	return jsonify(res)
 
 @app.route("/analizar")
@@ -89,7 +86,6 @@ def analizar():
 	
 	# Now iterate through groups (here we will group by the year born)
 	for nombre, items in groupby(res, key=itemgetter('nombre')):
-		print (nombre)
 		grupo=[]
 				
 		for i in items:
@@ -110,9 +106,6 @@ def analizar():
 		for i in range(0, aux-1):
 			#Si intervalos RR sucesivos tienen diferencia mayor a 50 milisegundos. 
 			
-			print(abs(listaRR[i] - listaRR[i+1]))
-			print(" ")
-			
 			if(abs(listaRR[i] - listaRR[i+1])> 50):
 				count50+=1
 		
@@ -125,6 +118,55 @@ def analizar():
 				
 			
 	#Debo retornar varios conjuntos de datos (meanHR, maxHR, minHR, sdHR --- meanRR, maxRR, minRR, sdRR --- pRR50) filtrados por nombre
+	return jsonify(data)
+	
+@app.route("/centroide/<nombre>")
+def centroide(nombre):
+	
+	db = TinyDB('db.json')
+	
+	res = db.search(where('nombre') == nombre)
+	
+	listaRR = [x['rr'] for x in res]
+	listaRR = list(map(int, listaRR))
+	
+	listaHR = [x['hr'] for x in res]
+	listaHR = list(map(int, listaHR))
+	
+	aux = len(listaRR)
+	
+	coordenadasRR = []
+	coordenadasHR = []
+	
+	xListRR = []
+	yListRR = []
+	
+	xListHR = []
+	yListHR = []
+	
+	for i in range(0, aux-1):
+		xListRR.append(listaRR[i])
+		yListRR.append(listaRR[i+1])
+		
+		xListHR.append(listaHR[i])
+		yListHR.append(listaHR[i+1])
+		
+		puntoRR = {"x": listaRR[i], "y": listaRR[i+1]}
+		puntoHR = {"x": listaHR[i], "y": listaHR[i+1]}
+		
+		coordenadasRR.append(puntoRR)
+		coordenadasHR.append(puntoHR)
+	
+	xCenterRR = np.sum(xListRR)/(aux-1)
+	yCenterRR = np.sum(yListRR)/(aux-1)
+	centroideRR = {"x": xCenterRR, "y": yCenterRR}
+	
+	xCenterHR = np.sum(xListHR)/(aux-1)
+	yCenterHR = np.sum(yListHR)/(aux-1)
+	centroideHR = {"x": xCenterHR, "y": yCenterHR}
+	
+	data = {"centroideRR": centroideRR, "coordsRR": coordenadasRR, "centroideHR": centroideHR, "coordsHR": coordenadasHR}
+		
 	return jsonify(data)
 	
 if __name__ == "__main__":

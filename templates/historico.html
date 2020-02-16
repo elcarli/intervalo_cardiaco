@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 <script> 
 	$(document).ready(function(){
 	
@@ -16,18 +17,27 @@
                 url: "/lista",
                 success: function(data) {
 						
-                        resp=`<table border='1'>`;
+                        resp=`<table class="table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">HR</th>
+                                    <th scope="col">RR</th>
+                                  </tr>
+                                </thead>
+                                <tbody>`;
 
                           data.forEach(o => {                         
                           resp+=`
                             <tr>
-                              <td>Nombre:</td>  <td>${o.nombre}</td>
-                              <td>HR:</td>  <td>${o.hr}</td>
-                              <td>RR:</td>  <td>${o.rr}</td>
+                              <td>${o.nombre}</td>
+                              <td>${o.hr}</td>
+                              <td>${o.rr}</td>
                             </tr>`;
                           });
 
-                        resp+=`</table>`;
+                        resp+=`</tbody>
+                            </table>`;
             
                         //resp+=`${data[0].nombre} - ${data[0].hr} - ${data[0].rr}`;
                         $("#res").html(resp);
@@ -47,18 +57,27 @@
                 url: "/consulta/"+nombre,
                 success: function(data) {
 						
-                        resp=`<table border='1'>`;
+                  resp=`<table class="table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">HR</th>
+                                    <th scope="col">RR</th>
+                                  </tr>
+                                </thead>
+                                <tbody>`;
 
                           data.forEach(o => {                         
                           resp+=`
                             <tr>
-                              <td>Nombre:</td>  <td>${o.nombre}</td>
-                              <td>HR:</td>  <td>${o.hr}</td>
-                              <td>RR:</td>  <td>${o.rr}</td>
+                              <td>${o.nombre}</td>
+                              <td>${o.hr}</td>
+                              <td>${o.rr}</td>
                             </tr>`;
                           });
 
-                        resp+=`</table>`;
+                        resp+=`</tbody>
+                            </table>`;
             
                         //resp+=`${data[0].nombre} - ${data[0].hr} - ${data[0].rr}`;
                         $("#res").html(resp);
@@ -67,19 +86,25 @@
     }
 		
   });
-</script
+</script>
 </head>
 <body>
-	<h2>{{tit}}</h2>
-	<br><br>
-
-	
   <br>
-  <p>Nombre: <input type="text" id="nombre"></p>
-	<button id="filtrar">Filtrar</button>
-	<br>
-	
-	<div id="res"></div>	
+  
+	<h2 class="text-center">HISTÓRICO DE SESIONES</h2>
+  
+  <div class="col-12">
+		<div class="input-group input-group-lg w-25 mx-auto">
+			<input type="text" id="nombre" class="form-control" placeholder="Nombre" aria-label="Recipient's username" aria-describedby="basic-addon2">
+			<div class="input-group-append">
+				<button class="btn btn-outline-success" type="button" id="filtrar">Filtrar</button>
+			</div>
+		</div>
+  </div>
+  
+  <br>
+  
+	<div id="res"></div>
 
 </body>
 </html>
